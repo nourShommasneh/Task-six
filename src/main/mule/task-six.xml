@@ -90,6 +90,14 @@ output application/json
 						<email:to-addresses >
 							<email:to-address value="nshommasneh@aspire-services.net" />
 						</email:to-addresses>
+						<email:body >
+							<email:content ><![CDATA[LOB -609 records were not successfully Processed  . Program Continues to The Second File . 
+
+#[payload]]]></email:content>
+						</email:body>
+						<email:attachments ><![CDATA[#[{
+	"Backup.json":vars.backup
+}]]]></email:attachments>
 					</email:send>
 				</on-error-continue>
 			</error-handler>
