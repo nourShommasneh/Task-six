@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="csv-all" format="csv">
+      <types:shape format="weave"><![CDATA[%dw 2.0
+
+type csv_all = Array<{|  column_0: String,   column_1: String,   column_2: String,   column_3: String,   column_4: String,   column_5: String,   column_6: String,   column_7: String,   column_8: String,   column_9: String|}> {"isQuotedString": "false",
+"header": "true",
+"headerLineNumber": "0"}
+
+]]></types:shape>
+      <types:properties>
+        <types:property name="headerLineNumber" value="0"/>
+        <types:property name="header" value="true"/>
+        <types:property name="isQuotedString" value="false"/>
+      </types:properties>
+    </types:type>
+    <types:type name="json-all" format="json">
+      <types:shape format="weave" example="examples/ca_en_update_inventory_20210208230503-2.json"><![CDATA[%dw 2.0
+
+type json_all = {|
+  wwSku: String, 
+  onHandQuantity: String, 
+  availableQuantity: String
+|} {"example": "{\\\"wwSku\\\":\\\"7070106\\\",\\\"onHandQuantity\\\":\\\"4965\\\",\\\"availableQuantity\\\":\\\"4965\\\"}"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#a04c8950-cf6c-4475-a27b-04eb2f03cf55">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="csv-all"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:email="http://www.mulesoft.org/schema/mule/email" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="d053a752-fdcb-4980-877f-bc2bcd3af998" >
+		<http:listener-connection host="${http.host}" port="${http.port}" connectionIdleTimeout="${idle.timeout.http}">
+			<reconnection >
+				<reconnect frequency="${freq.http}" count="${recon.attempts.http}" />
+			</reconnection>
+		</http:listener-connection>
+	</http:listener-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="5743d535-8961-4926-86b0-da0d9f2b0147" file="dev.properties" />
+	<file:config name="File_Config" doc:name="File Config" doc:id="72f036ce-dd94-454c-82f0-bbea6015b114" >
+		<file:connection workingDir="${file.config}" >
+			<reconnection >
+				<reconnect frequency="${freq.file}" count="${recon.attempts.file}"/>
+			</reconnection>
+		</file:connection>
+	</file:config>
+	<email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="d562c852-38bb-49a6-b245-8656a506d573" >
+		<email:smtp-connection host="${host.email}" port="${port.email}" user="${user.email}" password="Loveyoumom123@" >
+			<reconnection >
+				<reconnect frequency="${freq.email}" count="${recon.attempts.email}"/>
+			</reconnection>
+		</email:smtp-connection>
+	</email:smtp-config>
+</mule>
