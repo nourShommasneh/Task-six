@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:email="http://www.mulesoft.org/schema/mule/email" xmlns:file="http://www.mulesoft.org/schema/mule/file"
-	xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:email="http://www.mulesoft.org/schema/mule/email"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
-http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd">
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd">
 	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="d053a752-fdcb-4980-877f-bc2bcd3af998" >
 		<http:listener-connection host="${http.host}" port="${http.port}" connectionIdleTimeout="${idle.timeout.http}">
 			<reconnection >
@@ -21,11 +22,11 @@ http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/em
 			</reconnection>
 		</file:connection>
 	</file:config>
-	<email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="d562c852-38bb-49a6-b245-8656a506d573" >
-		<email:smtp-connection host="${host.email}" port="${port.email}" user="${user.email}" password="Loveyoumom123@" >
-			<reconnection >
-				<reconnect frequency="${freq.email}" count="${recon.attempts.email}"/>
-			</reconnection>
+	<email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="287bc522-8d7e-44b0-aa99-4ed67d7597f2" >
+		<email:smtp-connection host="smtp.gmail.com" port="587" user="noorsh93@gmail.com" password="Loveyoumom123@" >
+			<email:properties >
+				<email:property key="mail.smtp.starttls.enable" value="true" />
+			</email:properties>
 		</email:smtp-connection>
 	</email:smtp-config>
 </mule>

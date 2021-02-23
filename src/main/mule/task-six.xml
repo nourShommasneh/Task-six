@@ -21,23 +21,23 @@ output application/json
 "Error":error.description]]></ee:set-payload>
 						</ee:message>
 					</ee:transform>
-					<email:send doc:name="Copy_of_Send" doc:id="ac39e1e4-9087-4dc8-801b-1229c8f891df" config-ref="Email_SMTP" fromAddress="noorsh93@gmail.com" >
-						<email:to-addresses >
+					<email:send doc:name="Copy_of_Send" doc:id="ac39e1e4-9087-4dc8-801b-1229c8f891df" config-ref="Email_SMTP" fromAddress="noorsh93@gmail.com" subject="Error Occured | Check Access Options ">
+						<email:to-addresses>
 							<email:to-address value="nshommasneh@aspire-services.net" />
 						</email:to-addresses>
 					</email:send>
 				</on-error-propagate>
-				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="7712b341-6203-43a2-8a6e-be199160021e" type="FILE:CONNECTIVITY, FILE:ILLEGAL_PATH">
-					<ee:transform doc:name="Transform Message" doc:id="e0b4332e-2f88-4993-9c30-f90091a75a5d" >
-						<ee:message >
-							<ee:set-payload ><![CDATA[%dw 2.0
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="28f0da09-d92d-40e6-830f-65900707609b" type="FILE:CONNECTIVITY, FILE:ILLEGAL_PATH">
+					<ee:transform doc:name="Transform Message" doc:id="e0b4332e-2f88-4993-9c30-f90091a75a5d">
+						<ee:message>
+							<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 "Error":error.description]]></ee:set-payload>
 						</ee:message>
 					</ee:transform>
-					<email:send doc:name="Send" doc:id="8fb2017f-b755-4846-98dd-7e8f3bdf874a" config-ref="Email_SMTP" fromAddress="noorsh93@gmail.com">
-						<email:to-addresses >
+					<email:send doc:name="Send" doc:id="8fb2017f-b755-4846-98dd-7e8f3bdf874a" config-ref="Email_SMTP" fromAddress="noorsh93@gmail.com" subject="Error Occured | Check File Connectivity Or File Path">
+						<email:to-addresses>
 							<email:to-address value="nshommasneh@aspire-services.net" />
 						</email:to-addresses>
 					</email:send>
@@ -58,7 +58,9 @@ payload map {
 			</ee:message>
 		</ee:transform>
 		<set-variable value="#[payload]" doc:name="Set Variable" doc:id="d9c3693f-6b66-43d7-aad8-4f8c40dc3067" variableName="backup" />
-		<ee:transform doc:name="LOB-609" doc:id="34947191-0fb3-429f-9341-6ab4148ab038">
+		<try doc:name="Try" doc:id="17b0f027-5366-4f19-81e4-0988f8cb1060" >
+			<async doc:name="Async" doc:id="3c5eb133-72c7-4cb3-89ca-0d06065a58b9">
+			<ee:transform doc:name="LOB-609" doc:id="34947191-0fb3-429f-9341-6ab4148ab038">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -72,7 +74,26 @@ payload filter($.LOB == '609') map {
 			<ee:variables>
 			</ee:variables>
 		</ee:transform>
-		<file:write doc:name="Write" doc:id="4326d14c-efaa-4fec-9065-4f7b85ea634b" config-ref="File_Config" path="#['ca_en_update_inventory_'++ ( now() as String {format:'yyyyMMddhhmmss'}) ++ &quot;.json&quot;]" />
+			<file:write doc:name="Write" doc:id="4326d14c-efaa-4fec-9065-4f7b85ea634b" config-ref="File_Config" path="#['ca_en_update_inventory_'++ ( now() as String {format:'yyyyMMddhhmmss'}) ++ &quot;.json&quot;]" />
+		</async>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="7588ff00-02c0-4888-96db-32140891276a" type="ANY">
+					<ee:transform doc:name="Transform Message" doc:id="1a7323ae-293a-4759-89a9-f68710a72c55" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+"Error":error.description]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+					<email:send doc:name="Send" doc:id="1963d4c1-81fc-4fab-a2db-d9cae096baa0" config-ref="Email_SMTP" fromAddress="noorsh93@gmail.com" subject="Error Occured " >
+						<email:to-addresses >
+							<email:to-address value="nshommasneh@aspire-services.net" />
+						</email:to-addresses>
+					</email:send>
+				</on-error-continue>
+			</error-handler>
+		</try>
 		<set-payload value="#[vars.backup]" doc:name="Set Payload" doc:id="f6c08a30-72e0-4d16-acdb-19d91b4ad8dd" />
 		<ee:transform doc:name="LOB-509" doc:id="aa08ea3e-8983-45d7-9e1d-b47120af0634">
 			<ee:message>
@@ -88,9 +109,9 @@ payload default [] filter($.LOB == '509') map {
 			<ee:variables />
 		</ee:transform>
 		<file:write doc:name="Write" doc:id="f3ec01e3-0cc0-4c1f-9d30-23714e91c461" config-ref="File_Config" path="#['us_en_update_inventory_'++ ( now() as String {format:'yyyyMMddhhmmss'}) ++ &quot;.json&quot;]" />
-		<set-payload value="Successfully Converted And Written Into Two Files " doc:name="Set Payload" doc:id="3663c5cc-64aa-400c-b524-d37a73251303" />
+		<set-payload value="Successfully Converted " doc:name="Set Payload" doc:id="3663c5cc-64aa-400c-b524-d37a73251303" />
 		<error-handler >
-			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="87ea3b90-2738-4809-9199-bf8e137751da" type="ANY">
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="87ea3b90-2738-4809-9199-bf8e137751da" type="EMAIL:CONNECTIVITY, EMAIL:RETRY_EXHAUSTED, EMAIL:SEND, FILE:FILE_ALREADY_EXISTS, FILE:ILLEGAL_CONTENT, FILE:RETRY_EXHAUSTED, EXPRESSION, STREAM_MAXIMUM_SIZE_EXCEEDED">
 				<ee:transform doc:name="Transform Message" doc:id="d0403b6c-9798-40b2-ada2-2a650c913b24" >
 					<ee:message >
 						<ee:set-payload ><![CDATA[%dw 2.0
@@ -99,8 +120,8 @@ output application/json
 "Error":error.description]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-				<email:send doc:name="Copy_of_Send" doc:id="e20ca52e-370e-427d-b0ac-58e69823c8b5" config-ref="Email_SMTP" fromAddress="noorsh93@gmail.com" >
-					<email:to-addresses >
+				<email:send doc:name="Copy_of_Send" doc:id="e20ca52e-370e-427d-b0ac-58e69823c8b5" config-ref="Email_SMTP" fromAddress="noorsh93@gmail.com" subject="Error Occured ">
+					<email:to-addresses>
 						<email:to-address value="nshommasneh@aspire-services.net" />
 					</email:to-addresses>
 				</email:send>
