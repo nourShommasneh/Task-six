@@ -23,9 +23,12 @@ http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/
 		</file:connection>
 	</file:config>
 	<email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="287bc522-8d7e-44b0-aa99-4ed67d7597f2" >
-		<email:smtp-connection host="smtp.gmail.com" port="587" user="noorsh93@gmail.com" password="Loveyoumom123@" >
+		<email:smtp-connection host="${host.email}" port="${port.email}" user="${user.email}" password="Loveyoumom123@" connectionTimeout="${connectionTimeout.email}" readTimeout="${readTimeout.email}" writeTimeout="${writeTimeout.email}">
+			<reconnection >
+				<reconnect frequency="${freq.email}" count="${recon.attempts.email}" />
+			</reconnection>
 			<email:properties >
-				<email:property key="mail.smtp.starttls.enable" value="true" />
+				<email:property key="${key.email}" value="${value.key.email}" />
 			</email:properties>
 		</email:smtp-connection>
 	</email:smtp-config>
